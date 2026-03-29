@@ -4,27 +4,33 @@
 ![MPI](https://img.shields.io/badge/Parallel-MPI-red?style=for-the-badge)
 ![Bioinformatics](https://img.shields.io/badge/Domain-Bioinformatics-success?style=for-the-badge)
 
-This project implements a high-performance parallel version of the **Needleman-Wunsch** global alignment algorithm. It is designed to process and compare **COX1 genetic sequences** across multiple species by distributing the computational workload across multiple CPU cores using `mpi4py`.
+This repository contains a high-performance implementation of the **Needleman-Wunsch algorithm** for global sequence alignment. Using **MPI (Message Passing Interface)**, the system parallelizes the comparison of multiple genetic sequences, specifically focusing on the **COX1 (Cytochrome c oxidase subunit I)** gene across different species.
 
 ## 🚀 Key Features
-- **Parallel Optimization:** Uses Message Passing Interface (MPI) to distribute sequence comparison pairs across worker nodes, significantly reducing total alignment time.
-- **Needleman-Wunsch Algorithm:** A robust dynamic programming implementation for optimal global alignment and similarity scoring.
-- **Biopython Integration:** Seamlessly parses FASTA records from GenBank for large-scale data processing.
-- **Dynamic Load Balancing:** Utilizes `np.array_split` to ensure an even distribution of alignment tasks among available processors.
+- **Parallel Computing with MPI:** Distributes alignment tasks across multiple CPU cores using `mpi4py`, significantly reducing the time complexity for large-scale comparisons.
+- **Global Alignment Algorithm:** A robust dynamic programming implementation of the Needleman-Wunsch algorithm for optimal similarity scoring.
+- **Bioinformatics Integration:** Seamlessly parses FASTA records using `Biopython` for systematic genomic analysis.
+- **Scalable Architecture:** Designed to scale linearly with the number of available processors.
 
 ## 🛠 Tech Stack
-- **Language:** Python
-- **Parallel Computing:** `mpi4py` (MPI for Python)
-- **Bioinformatics:** `Biopython` (SeqIO)
-- **Data Handling:** `NumPy`
+- **Programming Language:** Python
+- **Parallelism:** `mpi4py` (MPI for Python)
+- **Library Support:** `Biopython` (SeqIO), `NumPy`
+- **Dataset:** 16 distinct COX1 gene sequences retrieved from GenBank (FASTA format).
 
 ## 📊 How It Works
-1. **Rank 0 (Master):** Reads all `.fasta` files from the specified directory.
-2. **Broadcast:** Sequences are broadcasted to all worker processes using `comm.bcast`.
-3. **Parallel Alignment:** Each process calculates scores for a specific subset of sequence pairs.
-4. **Gather:** Results are collected and summarized by the master process.
+1. **Master Node (Rank 0):** Loads 16 COX1 sequence files from the `/data` directory.
+2. **Broadcast:** Distributes sequence data to all worker nodes via `comm.bcast`.
+3. **Parallel Tasking:** Worker nodes independently calculate alignment scores for assigned pairs.
+4. **Gather:** Rank 0 collects all scores and outputs the final evolutionary distance matrix/summary.
 
-## 🏃 Usage
-To run the project in parallel (e.g., using 4 cores):
+## 📂 Project Structure
+- `parallel_alignment.py`: Core parallelized Python script.
+- `/data`: Contains 16 sample `.fasta` files for immediate testing.
+- `requirements.txt`: Project dependencies.
+
+## 🏃 Installation & Usage
+### 1. Requirements
+Ensure you have an MPI implementation (like MS-MPI or MPICH) installed on your system.
 ```bash
-mpiexec -n 4 python parallel_alignment.py
+pip install mpi4py biopython numpy
